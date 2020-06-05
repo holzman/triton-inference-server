@@ -635,10 +635,17 @@ S3FileSystem::S3FileSystem(
     : options_(options)
 {
   Aws::Client::ClientConfiguration config;
+  const char* region = std::getenv("AWS_DEFAULT_REGION");
+  config = Aws::Client::ClientConfiguration();
+
   if (const char* profile_name = std::getenv("AWS_PROFILE")) {
     config = Aws::Client::ClientConfiguration(profile_name);
   } else {
     config = Aws::Client::ClientConfiguration("default");
+  }
+
+  if (region != NULL) {
+    config.region = region;
   }
 
   if (local_path != ":") {
